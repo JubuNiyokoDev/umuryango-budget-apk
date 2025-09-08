@@ -32,9 +32,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      - name: Copy keystore from repository
-        run: |
-          ls -la android/app/my-upload-key.keystore || echo "Keystore not found in repo"
+
 
       - name: Build APK
         run: |
