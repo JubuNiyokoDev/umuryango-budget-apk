@@ -89,9 +89,14 @@ const App = () => {
       }
 
       const downloadUrl = asset.browser_download_url;
-      const localFile = `${RNFS.DownloadDirectoryPath}/umuryango_budget.apk`;
+      const localFile = `${RNFS.ExternalDirectoryPath}/umuryango_budget.apk`;
 
-      // Supprimer l'ancien fichier
+      // Créer le dossier si nécessaire et supprimer l'ancien fichier
+      const dirPath = RNFS.ExternalDirectoryPath;
+      if (!(await RNFS.exists(dirPath))) {
+        await RNFS.mkdir(dirPath);
+      }
+      
       if (await RNFS.exists(localFile)) {
         await RNFS.unlink(localFile);
       }
