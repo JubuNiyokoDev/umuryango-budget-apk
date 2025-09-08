@@ -1,0 +1,7 @@
+id_app=ca-app-pub-2300546388710165~1923776861
+id_anonce_baniere=ca-app-pub-2300546388710165/8161882158
+id_Interstitiel_anonce=ca-app-pub-2300546388710165/6253904110
+Interstitiel recompense Anonce=ca-app-pub-2300546388710165/9754165424
+Avec recompense = ca-app-pub-2300546388710165/4497969313
+Natif Avance=ca-app-pub-2300546388710165/4501838740
+Anonce a louvreture =ca-app-pub-2300546388710165/5479878493
