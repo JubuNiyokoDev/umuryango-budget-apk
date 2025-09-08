@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,11 +12,14 @@ import DeviceInfo from 'react-native-device-info';
 import LinearGradient from 'react-native-linear-gradient';
 import RNFS from 'react-native-fs';
 
-const GITHUB_RELEASES_URL = 'https://api.github.com/repos/JubuNiyokoDev/umuryango-budget/releases/latest';
+const GITHUB_RELEASES_URL =
+  'https://api.github.com/repos/JubuNiyokoDev/umuryango-budget/releases/latest';
 
 const App = () => {
   const [downloadProgress, setDownloadProgress] = useState(0);
-  const [updateStatus, setUpdateStatus] = useState<'idle' | 'downloading' | 'installing'>('idle');
+  const [updateStatus, setUpdateStatus] = useState<
+    'idle' | 'downloading' | 'installing'
+  >('idle');
   const [deviceInfo, setDeviceInfo] = useState<any>(null);
 
   useEffect(() => {
@@ -57,22 +60,26 @@ const App = () => {
 
   const downloadAndInstall = async () => {
     if (!deviceInfo) {
-      Alert.alert('Erreur', 'Impossible de détecter l\'architecture du périphérique');
+      Alert.alert(
+        'Erreur',
+        "Impossible de détecter l'architecture du périphérique",
+      );
       return;
     }
 
     setUpdateStatus('downloading');
     setDownloadProgress(0);
-    
+
     try {
       const response = await fetch(GITHUB_RELEASES_URL);
       const release = await response.json();
-      
+
       const targetArch = getApkUrl(deviceInfo.arch);
       const apkFileName = `app-${targetArch}-release.apk`;
-      
-      const asset = release.assets.find((asset: any) => 
-        asset.name.includes(targetArch) || asset.name.includes('universal')
+
+      const asset = release.assets.find(
+        (asset: any) =>
+          asset.name.includes(targetArch) || asset.name.includes('universal'),
       );
 
       if (!asset) {
@@ -93,14 +100,14 @@ const App = () => {
       const downloadResult = RNFS.downloadFile({
         fromUrl: downloadUrl,
         toFile: localFile,
-        progress: (res) => {
+        progress: res => {
           const progress = (res.bytesWritten / res.contentLength) * 100;
           setDownloadProgress(Math.round(progress));
         },
       });
 
       const result = await downloadResult.promise;
-      
+
       if (result.statusCode === 200) {
         await installApk(localFile);
       } else {
@@ -108,7 +115,10 @@ const App = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      Alert.alert('Erreur', 'Impossible de télécharger l\'application');
+      Alert.alert(
+        'Erreur',
+        `Impossible de télécharger l'application : ${error}`,
+      );
       setUpdateStatus('idle');
     }
   };
@@ -116,11 +126,11 @@ const App = () => {
   const installApk = async (filePath: string) => {
     try {
       setUpdateStatus('installing');
-      
+
       // Installation automatique avec Intent Android
       const { NativeModules } = require('react-native');
       const { RNInstallApk } = NativeModules;
-      
+
       if (RNInstallApk) {
         RNInstallApk.install(filePath);
       } else {
@@ -131,21 +141,18 @@ const App = () => {
           type: 'application/vnd.android.package-archive',
           flags: 268435456, // FLAG_ACTIVITY_NEW_TASK
         };
-        
+
         NativeModules.IntentLauncher?.startActivity(intent);
       }
     } catch (error) {
       console.error('Install error:', error);
-      Alert.alert('Erreur', 'Impossible d\'installer l\'application');
+      Alert.alert(`Erreur', "Impossible d'installer l'application ${error}`);
       setUpdateStatus('idle');
     }
   };
 
   return (
-    <LinearGradient
-      colors={['#1976D2', '#42A5F5']}
-      style={styles.container}>
-      
+    <LinearGradient colors={['#1976D2', '#42A5F5']} style={styles.container}>
       <View style={styles.logoContainer}>
         <View style={styles.logoCircle}>
           <Text style={styles.logoText}>UB</Text>
@@ -157,8 +164,12 @@ const App = () => {
       <View style={styles.infoContainer}>
         {deviceInfo && (
           <>
-            <Text style={styles.infoText}>📱 {deviceInfo.brand} {deviceInfo.model}</Text>
-            <Text style={styles.infoText}>🤖 Android {deviceInfo.systemVersion}</Text>
+            <Text style={styles.infoText}>
+              📱 {deviceInfo.brand} {deviceInfo.model}
+            </Text>
+            <Text style={styles.infoText}>
+              🤖 Android {deviceInfo.systemVersion}
+            </Text>
             <Text style={styles.infoText}>⚙️ {getApkUrl(deviceInfo.arch)}</Text>
           </>
         )}
@@ -166,9 +177,13 @@ const App = () => {
 
       {updateStatus === 'downloading' && (
         <View style={styles.progressContainer}>
-          <Text style={styles.statusText}>Téléchargement... {downloadProgress}%</Text>
+          <Text style={styles.statusText}>
+            Téléchargement... {downloadProgress}%
+          </Text>
           <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${downloadProgress}%` }]} />
+            <View
+              style={[styles.progressFill, { width: `${downloadProgress}%` }]}
+            />
           </View>
         </View>
       )}
@@ -176,14 +191,17 @@ const App = () => {
       {updateStatus === 'installing' && (
         <View style={styles.progressContainer}>
           <Text style={styles.statusText}>🔧 Installation en cours...</Text>
-          <Text style={styles.installText}>L'application va se lancer automatiquement</Text>
+          <Text style={styles.installText}>
+            L'application va se lancer automatiquement
+          </Text>
         </View>
       )}
 
       {updateStatus === 'idle' && (
         <TouchableOpacity
           style={styles.downloadButton}
-          onPress={downloadAndInstall}>
+          onPress={downloadAndInstall}
+        >
           <Text style={styles.buttonText}>📥 Installer l'Application</Text>
         </TouchableOpacity>
       )}
