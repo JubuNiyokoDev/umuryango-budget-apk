@@ -57,16 +57,16 @@ jobs:
         path: dist/Umuryango-Budget.apk
         
     - name: Create Release
-      if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: v${{ github.run_number }}
         files: dist/Umuryango-Budget.apk
-        name: Umuryango Budget ${{ github.ref_name }}
+        name: Umuryango Budget v${{ github.run_number }}
         body: |
           📱 **Umuryango Budget** - Version ${{ github.ref_name }}
           
           ## 📥 Téléchargement Direct
-          **[⬇️ Télécharger APK](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/Umuryango-Budget.apk)**
+          **[⬇️ Télécharger APK](https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/Umuryango-Budget.apk)**
           
           ## ✨ Fonctionnalités
           - 📅 Calendrier interactif de planification
