@@ -149,12 +149,17 @@ const App = () => {
 
         NativeModules.IntentLauncher?.startActivity(intent);
       }
+      
+
+      
     } catch (error) {
       console.error('Install error:', error);
       Alert.alert(`Erreur', "Impossible d'installer l'application ${error}`);
       setUpdateStatus('idle');
     }
   };
+  
+
 
   return (
     <LinearGradient colors={['#1976D2', '#42A5F5']} style={styles.container}>

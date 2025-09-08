@@ -35,10 +35,10 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x android/gradlew
       
-    - name: Create keystore
+    - name: Copy keystore from repository
       run: |
-        cd android/app
-        keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000 -storepass umuryango123 -keypass umuryango123 -dname "CN=Umuryango Budget, OU=Dev, O=JubuniyokoDev, L=Bujumbura, S=Bujumbura, C=BI"
+        # La clé existe déjà dans le repo, pas besoin de la générer
+        ls -la android/app/my-upload-key.keystore || echo "Keystore not found in repo"
       
     - name: Build APK
       run: |
