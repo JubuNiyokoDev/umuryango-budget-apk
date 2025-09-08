@@ -1,92 +1,83 @@
 name: Build and Release APK
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-        
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-      
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Make gradlew executable
-      run: chmod +x android/gradlew
-      
-    - name: Copy keystore from repository
-      run: |
-        # La clé existe déjà dans le repo, pas besoin de la générer
-        ls -la android/app/my-upload-key.keystore || echo "Keystore not found in repo"
-      
-    - name: Build APK
-      run: |
-        cd android
-        ./gradlew assembleRelease
-        
-    - name: Rename APK
-      run: |
-        mkdir -p dist
-        cp android/app/build/outputs/apk/release/app-release.apk dist/Umuryango-Budget.apk
-        
-    - name: Upload APK artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: umuryango-budget-apk
-        path: dist/Umuryango-Budget.apk
-        
-    - name: Create Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: v${{ github.run_number }}
-        files: dist/Umuryango-Budget.apk
-        name: Umuryango Budget v${{ github.run_number }}
-        body: |
-          📱 **Umuryango Budget** - Version ${{ github.ref_name }}
-          
-          ## 📥 Téléchargement Direct
-          **[⬇️ Télécharger APK](https://github.com/${{ github.repository }}/releases/download/v${{ github.run_number }}/Umuryango-Budget.apk)**
-          
-          ## ✨ Fonctionnalités
-          - 📅 Calendrier interactif de planification
-          - 🍽️ Suivi des repas quotidiens  
-          - 💰 Gestion du budget mensuel
-          - 👥 Gestion des contributeurs
-          - 📊 Historique et statistiques
-          - 🌍 Support multilingue (Français/Kirundi)
-          - 🎨 Thèmes clair/sombre
-          - 🔒 Protection par PIN
-          - 💾 Sauvegarde locale sécurisée
-          
-          ## 📱 Installation
-          1. Téléchargez le fichier APK ci-dessus
-          2. Activez "Sources inconnues" dans Android
-          3. Installez l'APK
-          
-          ---
-          Développé avec ❤️ par Niyondiko Joffre
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Copy keystore from repository
+        run: |
+          ls -la android/app/my-upload-key.keystore || echo "Keystore not found in repo"
+
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleRelease
+
+      - name: Rename APK
+        run: |
+          mkdir -p dist
+          cp android/app/build/outputs/apk/release/app-release.apk dist/Umuryango-Budget.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: umuryango-budget-apk
+          path: dist/Umuryango-Budget.apk
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_number }}
+          files: dist/Umuryango-Budget.apk
+          name: Umuryango Budget build-${{ github.run_number }}
+          body: |
+            📱 **Umuryango Budget**
+
+            ## 📥 Téléchargement Direct
+            **[⬇️ Télécharger APK](https://github.com/${{ github.repository }}/releases/download/build-${{ github.run_number }}/Umuryango-Budget.apk)**
+
+            ## ✨ Fonctionnalités
+            - 📅 Calendrier interactif de planification
+            - 🍽️ Suivi des repas quotidiens  
+            - 💰 Gestion du budget mensuel
+            - 👥 Gestion des contributeurs
+            - 📊 Historique et statistiques
+            - 🌍 Support multilingue (Français/Kirundi)
+            - 🎨 Thèmes clair/sombre
+            - 🔒 Protection par PIN
+            - 💾 Sauvegarde locale sécurisée
+
+            ---
+            Développé avec ❤️ par Niyondiko Joffre
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
