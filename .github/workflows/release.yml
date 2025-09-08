@@ -1,0 +1,79 @@
+name: Build and Release APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build APK
+      run: |
+        cd android
+        ./gradlew assembleRelease
+        
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: umuryango-budget-apk
+        path: android/app/build/outputs/apk/release/app-release.apk
+        
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: android/app/build/outputs/apk/release/app-release.apk
+        name: Umuryango Budget ${{ github.ref_name }}
+        body: |
+          📱 **Umuryango Budget** - Version ${{ github.ref_name }}
+          
+          ## 📥 Téléchargement Direct
+          **[⬇️ Télécharger APK](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/app-release.apk)**
+          
+          ## ✨ Fonctionnalités
+          - 📅 Calendrier interactif de planification
+          - 🍽️ Suivi des repas quotidiens  
+          - 💰 Gestion du budget mensuel
+          - 👥 Gestion des contributeurs
+          - 📊 Historique et statistiques
+          - 🌍 Support multilingue (Français/Kirundi)
+          - 🎨 Thèmes clair/sombre
+          - 🔒 Protection par PIN
+          - 💾 Sauvegarde locale sécurisée
+          
+          ## 📱 Installation
+          1. Téléchargez le fichier APK ci-dessus
+          2. Activez "Sources inconnues" dans Android
+          3. Installez l'APK
+          
+          ---
+          Développé avec ❤️ par Niyondiko Joffre
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
