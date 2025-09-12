@@ -9,7 +9,7 @@ import {
   Platform,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import LinearGradient from 'react-native-linear-gradient';
+
 import RNFS from 'react-native-fs';
 
 const GITHUB_RELEASES_URL =
@@ -96,7 +96,7 @@ const App = () => {
       if (!(await RNFS.exists(dirPath))) {
         await RNFS.mkdir(dirPath);
       }
-      
+
       if (await RNFS.exists(localFile)) {
         await RNFS.unlink(localFile);
       }
@@ -149,38 +149,32 @@ const App = () => {
 
         NativeModules.IntentLauncher?.startActivity(intent);
       }
-      
-
-      
     } catch (error) {
       console.error('Install error:', error);
       Alert.alert(`Erreur', "Impossible d'installer l'application ${error}`);
       setUpdateStatus('idle');
     }
   };
-  
-
 
   return (
-    <LinearGradient colors={['#1976D2', '#42A5F5']} style={styles.container}>
+    <View style={[styles.container, styles.gradient]}>
       <View style={styles.logoContainer}>
         <View style={styles.logoCircle}>
           <Text style={styles.logoText}>UB</Text>
         </View>
         <Text style={styles.title}>Umuryango Budget</Text>
-        <Text style={styles.subtitle}>Installateur Universel</Text>
       </View>
 
       <View style={styles.infoContainer}>
         {deviceInfo && (
           <>
             <Text style={styles.infoText}>
-              📱 {deviceInfo.brand} {deviceInfo.model}
+              {deviceInfo.brand} {deviceInfo.model}
             </Text>
             <Text style={styles.infoText}>
-              🤖 Android {deviceInfo.systemVersion}
+              Android {deviceInfo.systemVersion}
             </Text>
-            <Text style={styles.infoText}>⚙️ {getApkUrl(deviceInfo.arch)}</Text>
+            <Text style={styles.infoText}> {getApkUrl(deviceInfo.arch)}</Text>
           </>
         )}
       </View>
@@ -200,7 +194,7 @@ const App = () => {
 
       {updateStatus === 'installing' && (
         <View style={styles.progressContainer}>
-          <Text style={styles.statusText}>🔧 Installation en cours...</Text>
+          <Text style={styles.statusText}> Installation en cours...</Text>
           <Text style={styles.installText}>
             L'application va se lancer automatiquement
           </Text>
@@ -212,14 +206,17 @@ const App = () => {
           style={styles.downloadButton}
           onPress={downloadAndInstall}
         >
-          <Text style={styles.buttonText}>📥 Installer l'Application</Text>
+          <Text style={styles.buttonText}>
+            {' '}
+            Telecharger Derniere Vesrion de l'Application
+          </Text>
         </TouchableOpacity>
       )}
 
       <Text style={styles.description}>
         Installation automatique avec remplacement de cet installateur.
       </Text>
-    </LinearGradient>
+    </View>
   );
 };
 
@@ -229,6 +226,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  gradient: {
+    backgroundColor: '#1976D2',
   },
   logoContainer: {
     alignItems: 'center',

@@ -1,25 +1,61 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Optimisations ProGuard ULTRA-AGRESSIVES pour taille minimale
+-optimizationpasses 10
+-allowaccessmodification
+-mergeinterfacesaggressively
+-repackageclasses ''
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+-verbose
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Optimisations maximales
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Suppression TOTALE des logs et debug
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+    public static *** w(...);
+    public static *** e(...);
+    public static *** wtf(...);
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-assumenosideeffects class java.io.PrintStream {
+    public void println(...);
+    public void print(...);
+}
 
-# Keep InstallApk classes
--keep class com.jubuniyokodev.umuryangobudget.InstallApkModule { *; }
--keep class com.jubuniyokodev.umuryangobudget.InstallApkPackage { *; }
+# Suppression des assertions
+-assumenosideeffects class * {
+    boolean assert*(...);
+}
+
+# React Native minimal
+-keep class com.facebook.react.ReactApplication { *; }
+-keep class com.facebook.react.ReactNativeHost { *; }
+-keep class com.facebook.react.ReactPackage { *; }
+-keep class com.facebook.react.shell.MainReactPackage { *; }
+-keep class com.facebook.soloader.** { *; }
+
+# App minimal
+-keep class com.jubuniyokodev.umuryangobudget.MainApplication { *; }
+-keep class com.jubuniyokodev.umuryangobudget.MainActivity { *; }
+
+# Suppression métadonnées non-essentielles
+-keepattributes Signature
+-keepattributes *Annotation*
+
+# Suppression des classes inutiles
+-dontwarn **
+-ignorewarnings
+
+# Optimisation ressources
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+
+# Suppression des bibliothèques de test
+-dontwarn junit.**
+-dontwarn org.mockito.**
+-dontwarn org.junit.**

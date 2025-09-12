@@ -8,16 +8,15 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "build:android": "cd android && ./gradlew assembleRelease",
+    "build:android": "cd android && ./gradlew assembleRelease --no-daemon",
+    "build:android:clean": "cd android && ./gradlew clean && ./gradlew assembleRelease --no-daemon",
     "release": "node release.js"
   },
   "dependencies": {
-    "@react-native/new-app-screen": "0.81.1",
     "react": "19.1.0",
     "react-native": "0.81.1",
     "react-native-device-info": "^14.0.4",
-    "react-native-fs": "^2.20.0",
-    "react-native-linear-gradient": "^2.8.3"
+    "react-native-fs": "^2.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

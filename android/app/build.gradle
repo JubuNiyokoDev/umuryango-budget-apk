@@ -7,8 +7,9 @@ react {
     autolinkLibrariesWithApp()
 }
 
-def enableProguardInReleaseBuilds = false
-def jscFlavor = 'io.github.react-native-community:jsc-android:241761.0.0'
+def enableProguardInReleaseBuilds = true
+def enableSeparateBuildPerCPUArchitecture = false
+def jscFlavor = 'org.webkit:android-jsc:+'
 
 // ✅ Config Android
 android {
@@ -24,8 +25,10 @@ android {
         versionCode 1
         versionName "1.0"
         ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            abiFilters "armeabi-v7a", "arm64-v8a"
         }
+        resConfigs "en", "fr"
+        vectorDrawables.useSupportLibrary = true
     }
 
     signingConfigs {
@@ -51,9 +54,10 @@ android {
         }
         release {
             signingConfig signingConfigs.release
-            shrinkResources false
+            shrinkResources true
             minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            zipAlignEnabled true
         }
     }
 }
@@ -61,10 +65,7 @@ android {
 dependencies {
     // React Native auto gère la version
     implementation("com.facebook.react:react-android")
-
-    if (hermesEnabled.toBoolean()) {
-        implementation("com.facebook.react:hermes-android")
-    } else {
-        implementation jscFlavor
-    }
+    
+    // Utiliser Hermes par défaut pour optimiser la taille
+    implementation("com.facebook.react:hermes-android")
 }
