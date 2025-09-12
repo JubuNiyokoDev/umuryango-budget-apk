@@ -9,7 +9,7 @@ react {
 
 def enableProguardInReleaseBuilds = true
 def enableSeparateBuildPerCPUArchitecture = false
-def jscFlavor = 'org.webkit:android-jsc-intl:+'
+def jscFlavor = 'org.webkit:android-jsc:+'
 
 // ✅ Config Android
 android {
@@ -70,6 +70,6 @@ dependencies {
     // React Native auto gère la version
     implementation("com.facebook.react:react-android")
     
-    // JSC léger au lieu de Hermes
-    implementation jscFlavor
+    // Hermes optimisé
+    implementation("com.facebook.react:hermes-android")
 }
