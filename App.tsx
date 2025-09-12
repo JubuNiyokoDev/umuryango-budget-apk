@@ -27,14 +27,7 @@ const App = () => {
     requestPermissions();
   }, []);
 
-  const requestPermissions = async () => {
-    if (Platform.OS === 'android') {
-      await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      ]);
-    }
-  };
+  const requestPermissions = () => {};
 
   const getDeviceInfo = async () => {
     try {
